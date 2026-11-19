@@ -26,6 +26,7 @@
 .category-tree .cat-count{font-size:9px;color:#9aa69f;background:#f2f5f2;border-radius:99px;padding:2px 6px}
 .category-tree .cat-empty{font-size:10px;color:#a0aaa4;padding:5px 28px}
 .library-content{min-width:0}
+.folder-actions{margin:0 0 10px}.folder-actions .btn{width:100%}.folder-tree details{margin:3px 0}.folder-tree summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:7px;padding:8px;border-radius:8px;font-size:12px;color:#53645a}.folder-tree summary::-webkit-details-marker{display:none}.folder-tree summary:before{content:'›';color:#91a197;font-size:16px}.folder-tree details[open]>summary:before{transform:rotate(90deg)}.folder-row{display:flex;align-items:center;gap:4px;padding-left:18px}.folder-row .folder-select{flex:1;text-align:left;background:transparent;color:#718078;padding:7px 6px;border-radius:7px;font-size:11px;min-width:0}.folder-row .folder-select.active{background:#eaf2ed;color:#527663;font-weight:700}.folder-tools{display:flex;gap:3px}.folder-mini{background:#f4f7f4;color:#718078;border-radius:6px;padding:4px 6px;font-size:10px}.folder-image-list{display:grid;gap:12px;margin-top:10px}.folder-image{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;gap:14px;align-items:flex-start}.folder-image img{width:min(240px,38%);max-height:260px;object-fit:contain;background:#f7f9f7;border-radius:8px;cursor:zoom-in}.lightbox{position:fixed;inset:0;background:#18231dcc;z-index:30;display:none;align-items:center;justify-content:center;padding:20px}.lightbox.show{display:flex}.lightbox img{max-width:95vw;max-height:90vh;object-fit:contain}
 @media(max-width:800px){.library-layout{grid-template-columns:1fr}.category-panel{position:static;max-height:none}.category-tree{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px}}
 @media(max-width:520px){.category-tree{grid-template-columns:1fr}}
 
@@ -55,7 +56,7 @@
 <section class="page" id="library"><div class="head"><div><h1>素材ライブラリ</h1><p class="lead">画像・GIF・制作ファイルを整理します。</p></div><button class="btn" id="addAsset">＋ 素材を登録</button></div>
 <div class="library-layout">
 <aside class="category-panel">
- <div class="category-panel-head"><b>カテゴリー一覧</b><button class="category-reset" id="resetCategory">すべて表示</button></div>
+ <div class="category-panel-head"><b>フォルダ</b><button class="category-reset" id="resetCategory">すべて表示</button></div><div class="folder-actions"><button class="btn secondary" id="addFolder">＋ フォルダ作成</button></div>
  <div class="category-tree" id="categoryTree"></div>
 </aside>
 <div class="library-content">
@@ -69,11 +70,12 @@
 <section class="page" id="history"><div class="head"><div><h1>更新履歴</h1><p class="lead">素材・タスク・設定資料の変更を時系列で記録します。</p></div><button class="btn secondary" id="refresh">↻ 更新</button></div><div class="list" id="historyList"></div></section>
 </main></div>
 
+<div class="lightbox" id="imageLightbox"><img id="lightboxImage" alt="画像プレビュー"></div>
 <div class="modalback" id="modal"><div class="modal"><div class="modalhead"><h2 id="modalTitle">新規登録</h2><button class="x" id="closeModal">×</button></div><form id="editForm"><div id="formFields"></div><div class="modalactions"><button type="button" class="btn ghost" id="cancelModal">キャンセル</button><button class="btn" type="submit">保存する</button></div></form></div></div>
 
 <script>
 const CONFIG = window.VR_CONFIG || {};
-let db=null, currentType='', editingId=null, assets=[], tasks=[], docs=[], history=[], activeMajor='', activeMiddle='', activeMinor='';
+let db=null, currentType='', editingId=null, assets=[], tasks=[], docs=[], history=[], folders=[], activeFolderId='';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=s=>s?new Date(s).toLocaleString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
@@ -82,70 +84,23 @@ function go(page){document.querySelectorAll('.page').forEach(x=>x.classList.togg
 document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>go(b.dataset.page));document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 function requireDb(){if(!db){alert('まだクラウド接続が設定されていません。READMEの「Supabase接続設定」を先に行ってください。');return false}return true}
 async function loadAll(){if(!requireDb())return;setConnection(true,'クラウド接続中');try{
- const [a,t,d,h]=await Promise.all([db.from('assets').select('*').order('updated_at',{ascending:false}),db.from('tasks').select('*').order('created_at',{ascending:false}),db.from('documents').select('*').order('updated_at',{ascending:false}),db.from('activity_logs').select('*').order('created_at',{ascending:false}).limit(100)]);
- for(const r of [a,t,d,h])if(r.error)throw r.error;
- assets=a.data||[];tasks=t.data||[];docs=d.data||[];history=h.data||[];setConnection(true,'クラウド同期済み');renderAll();
+ const [a,t,d,h,f]=await Promise.all([db.from('assets').select('*').order('updated_at',{ascending:false}),db.from('tasks').select('*').order('created_at',{ascending:false}),db.from('documents').select('*').order('updated_at',{ascending:false}),db.from('activity_logs').select('*').order('created_at',{ascending:false}).limit(100),db.from('asset_folders').select('*').order('sort_order').order('name')]);
+ for(const r of [a,t,d,h,f])if(r.error)throw r.error;
+ assets=a.data||[];tasks=t.data||[];docs=d.data||[];history=h.data||[];folders=f.data||[];setConnection(true,'クラウド同期済み');renderAll();
  }catch(e){setConnection(false,'接続エラー');console.error(e);alert('データの読み込みに失敗しました：'+e.message)}}
 async function log(action,kind,title){if(!db)return;await db.from('activity_logs').insert({action,entity_type:kind,entity_title:title})}
 async function remove(kind,id,title){if(!requireDb()||!confirm(`「${title}」を削除しますか？`))return;const table=kind==='asset'?'assets':kind==='task'?'tasks':'documents';const {error}=await db.from(table).delete().eq('id',id);if(error){alert(error.message);return}await log('削除',kind,title);await loadAll()}
 function renderAll(){renderAssets();renderTasks();renderDocs();renderHistory();renderDashboard()}
 function renderDashboard(){$('statAssets').textContent=assets.length;$('statTasks').textContent=tasks.filter(x=>x.status!=='完了').length;$('statDocs').textContent=docs.length;$('statHistory').textContent=history.length;const counts=['未着手','進行中','確認待ち','完了'].map(s=>[s,tasks.filter(t=>t.status===s).length]);$('dashTasks').innerHTML=counts.map(([s,n])=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #edf1ed"><span>${s}</span><b>${n}</b></div>`).join('')||'まだタスクがありません';$('recentHistory').innerHTML=history.slice(0,5).map(h=>`<div style="padding:7px 0;border-bottom:1px solid #edf1ed"><b>${esc(h.action)}</b>　${esc(h.entity_title)}<div class="meta">${date(h.created_at)}</div></div>`).join('')||'まだ更新履歴がありません'}
-const defaultCategoryTree=[
- {name:'キャラクター',children:[{name:'主人公／ライバル'},{name:'スタッフ'},{name:'トレーナー'},{name:'モブ'}]},
- {name:'モンスター',children:[{name:'基本種'},{name:'混合種'}]},
- {name:'ゲーム素材',children:[{name:'キャラクター'},{name:'モンスター'},{name:'素材'},{name:'動作GIF'}]}
-];
-function buildCategoryTree(){
- const tree=defaultCategoryTree.map(m=>({name:m.name,children:m.children.map(x=>({name:x.name,minor:new Set()}))}));
- for(const a of assets){
-  const major=a.major||'未分類';
-  let m=tree.find(x=>x.name===major);
-  if(!m){m={name:major,children:[]};tree.push(m)}
-  const middle=a.middle||'未分類';
-  let mid=m.children.find(x=>x.name===middle);
-  if(!mid){mid={name:middle,minor:new Set()};m.children.push(mid)}
-  if(a.minor)mid.minor.add(a.minor);
- }
- return tree;
-}
-function categoryCount(major='',middle='',minor=''){
- return assets.filter(a=>(!major||a.major===major)&&(!middle||a.middle===middle)&&(!minor||a.minor===minor)).length;
-}
-function selectCategory(major='',middle='',minor=''){
- activeMajor=major;activeMiddle=middle;activeMinor=minor;renderAssets();
-}
-function renderCategoryTree(){
- const tree=buildCategoryTree();
- const selected=(m,mid='',minor='')=>activeMajor===m&&activeMiddle===mid&&activeMinor===minor?'selected':'';
- $('categoryTree').innerHTML=tree.map(m=>{
-  const mCount=categoryCount(m.name);
-  const middleHtml=m.children.map(mid=>{
-   const midCount=categoryCount(m.name,mid.name);
-   const minors=[...mid.minor].sort((a,b)=>a.localeCompare(b,'ja'));
-   return `<details ${activeMajor===m.name&&activeMiddle===mid.name?'open':''}>
-    <summary><span>${esc(mid.name)}</span><span class="cat-count">${midCount}</span></summary>
-    <button class="cat-link ${selected(m.name,mid.name)}" data-cat-major="${esc(m.name)}" data-cat-middle="${esc(mid.name)}">中カテゴリー全体 <span class="cat-count">${midCount}</span></button>
-    ${minors.map(n=>`<button class="cat-link level-minor ${selected(m.name,mid.name,n)}" data-cat-major="${esc(m.name)}" data-cat-middle="${esc(mid.name)}" data-cat-minor="${esc(n)}">${esc(n)} <span class="cat-count">${categoryCount(m.name,mid.name,n)}</span></button>`).join('')}
-   </details>`;
-  }).join('');
-  return `<details ${activeMajor===m.name?'open':''}>
-   <summary><strong>${esc(m.name)}</strong><span class="cat-count">${mCount}</span></summary>
-   <button class="cat-link ${selected(m.name)}" data-cat-major="${esc(m.name)}">大カテゴリー全体 <span class="cat-count">${mCount}</span></button>
-   ${middleHtml||'<div class="cat-empty">中カテゴリーはまだありません</div>'}
-  </details>`;
- }).join('')||'<div class="cat-empty">カテゴリーがありません</div>';
- document.querySelectorAll('[data-cat-major]').forEach(b=>b.onclick=()=>selectCategory(b.dataset.catMajor,b.dataset.catMiddle||'',b.dataset.catMinor||''));
- $('resetCategory').onclick=()=>selectCategory();
- $('categorySelection').textContent=activeMajor?[activeMajor,activeMiddle,activeMinor].filter(Boolean).join(' / ')+' の素材を表示中':'すべてのカテゴリーの素材を表示中';
-}
-function renderAssets(){
- const q=$('assetSearch').value.toLowerCase(),st=$('assetStatus').value;
- renderCategoryTree();
- const rows=assets.filter(a=>(!activeMajor||a.major===activeMajor)&&(!activeMiddle||a.middle===activeMiddle)&&(!activeMinor||a.minor===activeMinor)&&(!st||a.status===st)&&(!q||[a.name,a.description,(a.tags||[]).join(' '),a.major,a.middle,a.minor].join(' ').toLowerCase().includes(q)));
- $('assetGrid').innerHTML=rows.map(a=>`<article class="tile" data-asset="${a.id}"><div class="thumb">${a.preview_url?`<img src="${esc(a.preview_url)}">`:'✧'}</div><div class="tilebody"><b>${esc(a.name)}</b><small>${esc([a.major,a.middle,a.minor].filter(Boolean).join(' / '))}</small><span class="pill ${a.status==='完成'?'done':a.status==='確認待ち'?'wait':''}">${esc(a.status||'制作中')}</span>${(a.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div></article>`).join('')||'<div class="empty">該当する素材がありません。</div>';
- document.querySelectorAll('[data-asset]').forEach(x=>x.onclick=()=>showAsset(x.dataset.asset))
-}
-function showAsset(id){const a=assets.find(x=>x.id===id);if(!a)return;go('assetDetail');$('assetDetailBody').innerHTML=`<div class="detail"><div class="head"><div><h1>${esc(a.name)}</h1><p class="lead">${esc([a.major,a.middle,a.minor].filter(Boolean).join(' / '))}</p></div><div><button class="btn secondary" id="editCurrent">編集</button> <button class="btn danger" id="deleteCurrent">削除</button></div></div>${a.preview_url?`<div class="detailrow"><span>プレビュー</span><img src="${esc(a.preview_url)}" alt="${esc(a.name)}"></div>`:''}<div class="detailrow"><span>状態</span>${esc(a.status)}</div><div class="detailrow"><span>説明・メモ</span>${esc(a.description||'未登録')}</div><div class="detailrow"><span>タグ</span>${(a.tags||[]).map(esc).join(' / ')||'なし'}</div><div class="detailrow"><span>ファイル</span>${(a.file_urls||[]).map(u=>`<a href="${esc(u)}" target="_blank" rel="noopener">ファイルを開く</a>`).join('<br>')||'なし'}</div><div class="meta">最終更新：${date(a.updated_at)}</div></div>`;$('editCurrent').onclick=()=>openForm('asset',a);$('deleteCurrent').onclick=()=>remove('asset',a.id,a.name)}
+function folderPath(id){const names=[];let f=folders.find(x=>x.id===id);while(f){names.unshift(f.name);f=folders.find(x=>x.id===f.parent_id)}return names.join(' / ')}
+function folderOptions(parentId=null,depth=0){return folders.filter(f=>(f.parent_id||null)===(parentId||null)).flatMap(f=>[{id:f.id,label:'　'.repeat(depth)+f.name},...folderOptions(f.id,depth+1)])}
+function renderFolderBranch(parentId=null){return folders.filter(f=>(f.parent_id||null)===(parentId||null)).map(f=>'<details '+(activeFolderId===f.id?'open':'')+'><summary>📁 '+esc(f.name)+'</summary><div class="folder-row"><button class="folder-select '+(activeFolderId===f.id?'active':'')+'" data-folder-select="'+f.id+'">表示 ('+assets.filter(a=>a.folder_id===f.id).length+')</button><div class="folder-tools"><button class="folder-mini" data-folder-add="'+f.id+'">＋</button><button class="folder-mini" data-folder-rename="'+f.id+'">✎</button><button class="folder-mini" data-folder-delete="'+f.id+'">×</button></div></div>'+renderFolderBranch(f.id)+'</details>').join('')}
+function renderCategoryTree(){$('categoryTree').className='folder-tree';$('categoryTree').innerHTML=renderFolderBranch()||'<div class="cat-empty">フォルダはまだありません。</div>';document.querySelectorAll('[data-folder-select]').forEach(b=>b.onclick=()=>{activeFolderId=b.dataset.folderSelect;renderAssets()});document.querySelectorAll('[data-folder-add]').forEach(b=>b.onclick=()=>createFolder(b.dataset.folderAdd));document.querySelectorAll('[data-folder-rename]').forEach(b=>b.onclick=()=>renameFolder(b.dataset.folderRename));document.querySelectorAll('[data-folder-delete]').forEach(b=>b.onclick=()=>deleteFolder(b.dataset.folderDelete));$('resetCategory').onclick=()=>{activeFolderId='';renderAssets()};$('categorySelection').textContent=activeFolderId?folderPath(activeFolderId)+' の素材を表示中':'すべてのフォルダの素材を表示中'}
+async function createFolder(parentId=null){const name=prompt('フォルダ名');if(!name||!name.trim())return;const r=await db.from('asset_folders').insert({name:name.trim(),parent_id:parentId||null});if(r.error){alert(r.error.message);return}await loadAll()}
+async function renameFolder(id){const f=folders.find(x=>x.id===id);const name=prompt('新しいフォルダ名',f.name);if(!name||!name.trim())return;const r=await db.from('asset_folders').update({name:name.trim()}).eq('id',id);if(r.error){alert(r.error.message);return}await loadAll()}
+async function deleteFolder(id){const f=folders.find(x=>x.id===id);if(!confirm('「'+f.name+'」と配下のフォルダを削除しますか？素材は削除されず未分類になります。'))return;const r=await db.from('asset_folders').delete().eq('id',id);if(r.error){alert(r.error.message);return}activeFolderId='';await loadAll()}
+function renderAssets(){const q=$('assetSearch').value.toLowerCase(),st=$('assetStatus').value;renderCategoryTree();const rows=assets.filter(a=>(!activeFolderId||a.folder_id===activeFolderId)&&(!st||a.status===st)&&(!q||[a.name,a.description,(a.tags||[]).join(' '),folderPath(a.folder_id)].join(' ').toLowerCase().includes(q)));$('assetGrid').innerHTML=rows.map(a=>'<article class="tile" data-asset="'+a.id+'"><div class="thumb">'+(a.preview_url?'<img src="'+esc(a.preview_url)+'">':'✧')+'</div><div class="tilebody"><b>'+esc(a.name)+'</b><small>'+esc(folderPath(a.folder_id)||'未分類')+'</small><span class="pill">'+esc(a.status||'制作中')+'</span></div></article>').join('')||'<div class="empty">該当する素材がありません。</div>';document.querySelectorAll('[data-asset]').forEach(x=>x.onclick=()=>showAsset(x.dataset.asset))}
+function showAsset(id){const a=assets.find(x=>x.id===id);if(!a)return;go('assetDetail');const urls=[...new Set([a.preview_url,...(a.file_urls||[])].filter(Boolean))];const gallery=urls.map((u,i)=>'<div class="folder-image"><img src="'+esc(u)+'" data-zoom-src="'+esc(u)+'"><div>画像・ファイル '+(i+1)+'<br><a href="'+esc(u)+'" target="_blank">開く</a></div></div>').join('');$('assetDetailBody').innerHTML='<div class="detail"><div class="head"><div><h1>'+esc(a.name)+'</h1><p class="lead">'+esc(folderPath(a.folder_id)||'未分類')+'</p></div><div><button class="btn secondary" id="editCurrent">編集</button> <button class="btn danger" id="deleteCurrent">削除</button></div></div><div class="detailrow"><span>画像・ファイル（縦並び）</span><div class="folder-image-list">'+(gallery||'ファイルはありません')+'</div></div><div class="detailrow"><span>説明・メモ</span>'+esc(a.description||'未登録')+'</div></div>';$('editCurrent').onclick=()=>openForm('asset',a);$('deleteCurrent').onclick=()=>remove('asset',a.id,a.name);document.querySelectorAll('[data-zoom-src]').forEach(img=>img.onclick=()=>{$('lightboxImage').src=img.dataset.zoomSrc;$('imageLightbox').classList.add('show')})}
 function renderTasks(){const s=$('taskFilter').value,p=$('taskPriority').value;const rows=tasks.filter(t=>(!s||t.status===s)&&(!p||t.priority===p));$('taskList').innerHTML=rows.map(t=>`<div class="item"><div class="itemmain"><b>${esc(t.title)}</b><p>${esc(t.description||'')}</p><div class="meta">${esc(t.category||'未分類')}　·　優先度：${esc(t.priority||'中')}　·　期限：${esc(t.due_date||'未設定')}</div></div><span class="pill ${t.status==='完了'?'done':t.status==='確認待ち'?'wait':''}">${esc(t.status)}</span><button class="btn ghost" data-edit-task="${t.id}">編集</button><button class="btn danger" data-del-task="${t.id}">削除</button></div>`).join('')||'<div class="empty">タスクはまだありません。</div>';document.querySelectorAll('[data-edit-task]').forEach(b=>b.onclick=()=>openForm('task',tasks.find(x=>x.id===b.dataset.editTask)));document.querySelectorAll('[data-del-task]').forEach(b=>b.onclick=()=>{const t=tasks.find(x=>x.id===b.dataset.delTask);remove('task',t.id,t.title)})}
 function renderDocs(){const c=$('docCategory').value,q=$('docSearch').value.toLowerCase();const rows=docs.filter(d=>(!c||d.category===c)&&(!q||[d.title,d.content,d.category].join(' ').toLowerCase().includes(q)));$('docList').innerHTML=rows.map(d=>`<div class="item"><div class="itemmain"><b>${esc(d.title)}</b><p>${esc((d.content||'').slice(0,240))}</p><div class="meta">${esc(d.category)}　·　更新：${date(d.updated_at)}</div></div><button class="btn ghost" data-edit-doc="${d.id}">編集</button><button class="btn danger" data-del-doc="${d.id}">削除</button></div>`).join('')||'<div class="empty">資料はまだありません。</div>';document.querySelectorAll('[data-edit-doc]').forEach(b=>b.onclick=()=>openForm('doc',docs.find(x=>x.id===b.dataset.editDoc)));document.querySelectorAll('[data-del-doc]').forEach(b=>b.onclick=()=>{const d=docs.find(x=>x.id===b.dataset.delDoc);remove('doc',d.id,d.title)})}
 function renderHistory(){$('historyList').innerHTML=history.map(h=>`<div class="item"><div class="itemmain"><b>${esc(h.action)}：${esc(h.entity_title)}</b><div class="meta">${esc(h.entity_type)}　·　${date(h.created_at)}</div></div></div>`).join('')||'<div class="empty">更新履歴はまだありません。</div>'}
@@ -153,13 +108,13 @@ const input=(label,name,value='',type='text',extra='')=>`<div class="formitem"><
 const select=(label,name,opts,value)=>`<div class="formitem"><label>${label}</label><select class="select" name="${name}">${opts.map(o=>`<option ${o===value?'selected':''}>${o}</option>`).join('')}</select></div>`;
 const area=(label,name,value='')=>`<div class="formitem full"><label>${label}</label><textarea class="area" name="${name}">${esc(value)}</textarea></div>`;
 function openForm(type,row=null){if(!requireDb())return;currentType=type;editingId=row?.id||null;const isEdit=!!row;$('modalTitle').textContent=(isEdit?'編集':'新規登録')+({asset:'素材',task:'タスク',doc:'設定資料'}[type]);let f='';
-if(type==='asset'){f=`${input('素材名 *','name',row?.name||'','text','required')}${select('大カテゴリー','major',['キャラクター','モンスター','ゲーム素材'],row?.major||'キャラクター')}${input('中カテゴリー','middle',row?.middle||'')}${input('小カテゴリー','minor',row?.minor||'')}${select('状態','status',['制作中','確認待ち','完成','旧版'],row?.status||'制作中')}${input('タグ（カンマ区切り）','tags',(row?.tags||[]).join(', '))}${area('説明・メモ','description',row?.description||'')}${input('プレビュー画像URL（任意）','preview_url',row?.preview_url||'','url')}${input('ファイルURL（カンマ区切り・任意）','file_urls',(row?.file_urls||[]).join(', '),'text')}<div class="formitem full"><label>画像・GIF・動画をアップロード（複数選択可／1ファイル最大10MB）</label><input class="field" name="file_uploads" type="file" accept="image/*,video/mp4" multiple><small class="hint">選んだファイルはSupabase Storageに保存され、他の端末からも見られます。</small></div>`}
+if(type==='asset'){const folderHtml='<div class="formitem full"><label>保存先フォルダ</label><select class="select" name="folder_id"><option value="">未分類</option>'+folderOptions().map(x=>'<option value="'+x.id+'" '+(x.id===(row?.folder_id||activeFolderId)?'selected':'')+'>'+esc(x.label)+'</option>').join('')+'</select></div>';f=`${input('素材名 *','name',row?.name||'','text','required')}${folderHtml}${select('大カテゴリー','major',['キャラクター','モンスター','ゲーム素材'],row?.major||'キャラクター')}${input('中カテゴリー','middle',row?.middle||'')}${input('小カテゴリー','minor',row?.minor||'')}${select('状態','status',['制作中','確認待ち','完成','旧版'],row?.status||'制作中')}${input('タグ（カンマ区切り）','tags',(row?.tags||[]).join(', '))}${area('説明・メモ','description',row?.description||'')}${input('プレビュー画像URL（任意）','preview_url',row?.preview_url||'','url')}${input('ファイルURL（カンマ区切り・任意）','file_urls',(row?.file_urls||[]).join(', '),'text')}<div class="formitem full"><label>画像・GIF・動画をアップロード（複数選択可／1ファイル最大10MB）</label><input class="field" name="file_uploads" type="file" accept="image/*,video/mp4" multiple><small class="hint">選んだファイルはSupabase Storageに保存され、他の端末からも見られます。</small></div>`}
 if(type==='task'){f=`${input('タスク名 *','title',row?.title||'','text','required')}${select('分類','category',['キャラクター','モンスター','ゲーム素材','システム','シナリオ','その他'],row?.category||'その他')}${select('優先度','priority',['高','中','低'],row?.priority||'中')}${select('ステータス','status',['未着手','進行中','確認待ち','完了'],row?.status||'未着手')}${input('期限','due_date',row?.due_date||'','date')}${area('説明・作業メモ','description',row?.description||'')}`}
 if(type==='doc'){f=`${input('資料タイトル *','title',row?.title||'','text','required')}${select('分類','category',['基本システム','育成システム','レースシステム','フリーマッチ','バランス調整','世界観・設定','その他'],row?.category||'基本システム')}${area('本文・仕様メモ','content',row?.content||'')}`}
 $('formFields').innerHTML=`<div class="formgrid">${f}</div><p class="hint">保存するとクラウドデータベースに反映され、同じURLを開いた全端末で共有されます。</p>`;$('modal').classList.add('show')}
 function closeModal(){$('modal').classList.remove('show');$('editForm').reset()}
-$('addAsset').onclick=()=>openForm('asset');$('addTask').onclick=()=>openForm('task');$('addDoc').onclick=()=>openForm('doc');$('closeModal').onclick=closeModal;$('cancelModal').onclick=closeModal;
-$('editForm').onsubmit=async e=>{e.preventDefault();if(!requireDb())return;const data=Object.fromEntries(new FormData(e.target).entries());let table,kind,title;if(currentType==='asset'){table='assets';kind='asset';title=data.name;data.tags=(data.tags||'').split(',').map(x=>x.trim()).filter(Boolean);data.file_urls=(data.file_urls||'').split(',').map(x=>x.trim()).filter(Boolean);const files=[...($('editForm').elements.file_uploads?.files||[])];delete data.file_uploads;for(const file of files){if(file.size>10*1024*1024){alert(`「${file.name}」は10MBを超えています。10MB以下のファイルを選んでください。`);return}const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const path=`assets/${crypto.randomUUID()}-${safeName}`;const {error:uploadError}=await db.storage.from('vr-assets').upload(path,file,{upsert:false,contentType:file.type||undefined});if(uploadError){alert(`ファイル「${file.name}」のアップロードに失敗しました：${uploadError.message}`);return}const {data:publicData}=db.storage.from('vr-assets').getPublicUrl(path);const url=publicData.publicUrl;data.file_urls.push(url);if(!data.preview_url && file.type.startsWith('image/'))data.preview_url=url}}else if(currentType==='task'){table='tasks';kind='task';title=data.title}else{table='documents';kind='document';title=data.title}
+$('addAsset').onclick=()=>openForm('asset');$('addFolder').onclick=()=>createFolder(activeFolderId||null);$('addTask').onclick=()=>openForm('task');$('addDoc').onclick=()=>openForm('doc');$('closeModal').onclick=closeModal;$('cancelModal').onclick=closeModal;
+$('editForm').onsubmit=async e=>{e.preventDefault();if(!requireDb())return;const data=Object.fromEntries(new FormData(e.target).entries());let table,kind,title;if(currentType==='asset'){table='assets';kind='asset';title=data.name;data.folder_id=data.folder_id||null;data.tags=(data.tags||'').split(',').map(x=>x.trim()).filter(Boolean);data.file_urls=(data.file_urls||'').split(',').map(x=>x.trim()).filter(Boolean);const files=[...($('editForm').elements.file_uploads?.files||[])];delete data.file_uploads;for(const file of files){if(file.size>10*1024*1024){alert(`「${file.name}」は10MBを超えています。10MB以下のファイルを選んでください。`);return}const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,'_');const path=`assets/${crypto.randomUUID()}-${safeName}`;const {error:uploadError}=await db.storage.from('vr-assets').upload(path,file,{upsert:false,contentType:file.type||undefined});if(uploadError){alert(`ファイル「${file.name}」のアップロードに失敗しました：${uploadError.message}`);return}const {data:publicData}=db.storage.from('vr-assets').getPublicUrl(path);const url=publicData.publicUrl;data.file_urls.push(url);if(!data.preview_url && file.type.startsWith('image/'))data.preview_url=url}}else if(currentType==='task'){table='tasks';kind='task';title=data.title}else{table='documents';kind='document';title=data.title}
 const now=new Date().toISOString();data.updated_at=now;if(editingId){const {error}=await db.from(table).update(data).eq('id',editingId);if(error){alert(error.message);return}await log('編集',kind,title)}else{const {error}=await db.from(table).insert(data);if(error){alert(error.message);return}await log('追加',kind,title)}closeModal();await loadAll()};
 $('assetSearch').oninput=renderAssets;$('assetStatus').onchange=renderAssets;$('taskFilter').onchange=renderTasks;$('taskPriority').onchange=renderTasks;$('docCategory').onchange=renderDocs;$('docSearch').oninput=renderDocs;$('refresh').onclick=loadAll;$('backAssets').onclick=()=>go('library');
 $('backAssets').onclick=()=>go('library');
