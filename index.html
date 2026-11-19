@@ -9,6 +9,26 @@
 <style>
 :root{--bg:#f5f7f4;--paper:#fff;--ink:#34413b;--muted:#84918a;--line:#e5ebe6;--green:#86aa96;--deep:#527663;--pale:#eaf2ed;--lav:#eeeaf5;--peach:#f7eee8;--shadow:0 8px 24px #425d4c0b}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Yu Gothic",Meiryo,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer;border:0}.app{min-height:100vh;display:flex}.side{width:245px;flex-shrink:0;background:#fff;border-right:1px solid var(--line);padding:23px 16px;display:flex;flex-direction:column}.brand{display:flex;gap:10px;align-items:center;padding:0 8px 26px}.logo{width:38px;height:38px;border-radius:13px;background:linear-gradient(140deg,#b8d4c5,#e0eae3);display:grid;place-items:center;color:#527663;font-size:20px}.brand b{font-size:12px;letter-spacing:.08em}.brand small{display:block;color:var(--muted);font-size:9px;letter-spacing:.13em;margin-top:3px}.navcap{font-size:9px;color:#a0aaa4;letter-spacing:.15em;padding:12px 10px 8px}.nav{display:grid;gap:4px}.nav button{padding:11px 12px;border-radius:10px;background:transparent;text-align:left;color:#6e7b74;font-size:12px}.nav button.active,.nav button:hover{background:var(--pale);color:var(--deep);font-weight:700}.nav em{font-style:normal;display:inline-block;width:25px;font-size:15px}.sidefoot{margin-top:auto;background:#f4f7f5;padding:13px;border-radius:12px;font-size:11px;color:var(--muted);line-height:1.7}.main{flex:1;min-width:0;max-width:1500px;margin:auto;padding:28px 36px 60px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;color:var(--muted);font-size:11px}.status{padding:7px 10px;border-radius:99px;background:#edf3ef;color:var(--deep)}.page{display:none}.page.on{display:block}h1{font-size:25px;margin:0 0 7px}.lead{font-size:12px;line-height:1.8;color:var(--muted);margin:0}.head{display:flex;justify-content:space-between;gap:15px;align-items:flex-end;margin-bottom:22px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0}.stat,.panel,.tile{background:var(--paper);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow)}.stat{padding:15px}.stat small{color:var(--muted);font-size:10px}.stat strong{display:block;font-size:24px;margin-top:8px}.grid2{display:grid;grid-template-columns:1.2fr 1fr;gap:14px}.panel{padding:18px}.panel h3{font-size:13px;margin:0 0 6px}.sub{font-size:10px;color:var(--muted)}.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:13px}.quick button{padding:16px;text-align:left;background:#fff;border:1px solid var(--line);border-radius:14px;color:var(--ink)}.quick b{font-size:12px}.quick small{display:block;color:var(--muted);font-size:10px;margin-top:5px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 15px}.field,.select,.area{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 12px;color:var(--ink);font-size:12px;outline:none}.field{min-width:180px;flex:1}.btn{background:#789e89;color:#fff;border-radius:10px;padding:10px 14px;font-size:11px;font-weight:700}.btn.secondary{background:#edf3ef;color:#557663}.btn.ghost{background:#fff;color:#64766c;border:1px solid var(--line)}.btn.danger{background:#f8ece9;color:#a15f53}.chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 17px}.chip{padding:8px 12px;border-radius:99px;background:#fff;border:1px solid var(--line);color:#68766f;font-size:11px}.chip.active{background:var(--pale);border-color:#d8e6dc;color:var(--deep);font-weight:700}.assetgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.tile{overflow:hidden;cursor:pointer}.thumb{height:140px;background:linear-gradient(135deg,#e8f0eb,#f5eee8);display:grid;place-items:center;overflow:hidden;color:#8da89a;font-size:36px}.thumb img{width:100%;height:100%;object-fit:cover}.tilebody{padding:12px}.tilebody b{font-size:12px}.tilebody small{display:block;font-size:10px;color:var(--muted);margin-top:5px}.tag{display:inline-block;font-size:9px;color:#71877a;background:#f0f5f1;border-radius:5px;padding:4px 6px;margin:7px 4px 0 0}.empty{padding:35px 18px;text-align:center;color:var(--muted);font-size:12px;background:#fff;border:1px dashed #dce5de;border-radius:14px}.list{display:grid;gap:9px}.item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px;display:flex;align-items:center;gap:12px}.itemmain{flex:1;min-width:0}.itemmain b{font-size:12px}.itemmain p{font-size:10px;color:var(--muted);margin:5px 0 0;white-space:pre-wrap}.meta{font-size:10px;color:var(--muted);margin-top:5px}.pill{font-size:9px;padding:5px 8px;border-radius:99px;background:var(--pale);color:var(--deep);white-space:nowrap}.pill.wait{background:var(--peach);color:#9a725d}.pill.done{background:#edf0f7;color:#6c7090}.modalback{position:fixed;inset:0;background:#26352e66;display:none;align-items:center;justify-content:center;padding:16px;z-index:10}.modalback.show{display:flex}.modal{width:min(620px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:18px;padding:21px;box-shadow:0 20px 70px #1e302455}.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.modalhead h2{font-size:17px;margin:0}.x{background:#f2f5f2;border-radius:9px;width:30px;height:30px;color:#65746c}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.formitem{display:flex;flex-direction:column;gap:6px;margin-bottom:9px}.formitem.full{grid-column:1/-1}.formitem label{font-size:10px;color:#75827b}.formitem input,.formitem select,.formitem textarea{width:100%}.formitem textarea{min-height:80px;resize:vertical}.modalactions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.hint{font-size:10px;color:var(--muted);line-height:1.7}.detail{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;max-width:900px}.detail img{max-width:100%;max-height:360px;object-fit:contain;border-radius:10px;margin:6px}.detailrow{padding:12px 0;border-bottom:1px solid #edf1ed;font-size:12px}.detailrow span{display:block;color:var(--muted);font-size:10px;margin-bottom:5px}.notice{padding:12px 14px;border-radius:12px;background:#fff7e9;color:#856b43;font-size:11px;line-height:1.7;margin-bottom:15px}
+.library-layout{display:grid;grid-template-columns:245px minmax(0,1fr);gap:16px;align-items:start}
+.category-panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto}
+.category-panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.category-panel-head b{font-size:12px}
+.category-reset{font-size:10px;background:#edf3ef;color:#557663;border-radius:8px;padding:7px 9px}
+.category-tree details{margin:3px 0}
+.category-tree summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:7px;padding:9px 8px;border-radius:9px;font-size:12px;color:#53645a}
+.category-tree summary::-webkit-details-marker{display:none}
+.category-tree summary:before{content:'›';color:#91a197;font-size:16px;transition:transform .15s}
+.category-tree details[open]>summary:before{transform:rotate(90deg)}
+.category-tree summary:hover,.category-tree .cat-link:hover{background:#f4f7f4}
+.category-tree .cat-link{display:flex;width:100%;align-items:center;justify-content:space-between;text-align:left;background:transparent;padding:7px 9px 7px 28px;border-radius:8px;color:#718078;font-size:11px}
+.category-tree .cat-link.level-minor{padding-left:45px;font-size:10px}
+.category-tree .cat-link.selected{background:#eaf2ed;color:#527663;font-weight:700}
+.category-tree .cat-count{font-size:9px;color:#9aa69f;background:#f2f5f2;border-radius:99px;padding:2px 6px}
+.category-tree .cat-empty{font-size:10px;color:#a0aaa4;padding:5px 28px}
+.library-content{min-width:0}
+@media(max-width:800px){.library-layout{grid-template-columns:1fr}.category-panel{position:static;max-height:none}.category-tree{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px}}
+@media(max-width:520px){.category-tree{grid-template-columns:1fr}}
+
 @media(max-width:950px){.side{width:210px}.main{padding:24px}.assetgrid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:650px){.app{display:block}.side{width:100%;padding:12px;border:0;border-bottom:1px solid var(--line)}.brand{padding:0 5px 10px}.navcap,.sidefoot{display:none}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap;padding:9px}.nav em{width:auto;margin-right:5px}.main{padding:20px 14px 40px}.grid2{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.assetgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.thumb{height:110px}.quick{grid-template-columns:1fr}.head{align-items:flex-start;flex-direction:column}.formgrid{grid-template-columns:1fr}.formitem.full{grid-column:auto}.item{align-items:flex-start}.top{margin-bottom:18px}}
 </style>
@@ -33,7 +53,16 @@
 <div class="quick"><button data-go="library"><b>▧　素材ライブラリ</b><small>画像・GIF・キャラクター素材を登録</small></button><button data-go="tasks"><b>☷　タスク管理</b><small>制作の進捗を整理</small></button><button data-go="docs"><b>▤　設定資料集</b><small>ゲーム仕様・世界観を記録</small></button></div>
 </section>
 <section class="page" id="library"><div class="head"><div><h1>素材ライブラリ</h1><p class="lead">画像・GIF・制作ファイルを整理します。</p></div><button class="btn" id="addAsset">＋ 素材を登録</button></div>
-<div class="toolbar"><input class="field" id="assetSearch" placeholder="素材名・説明・タグで検索…"><select class="select" id="assetStatus"><option value="">すべての状態</option><option>制作中</option><option>確認待ち</option><option>完成</option><option>旧版</option></select></div><div class="chips" id="assetChips"></div><div class="assetgrid" id="assetGrid"></div></section>
+<div class="library-layout">
+<aside class="category-panel">
+ <div class="category-panel-head"><b>カテゴリー一覧</b><button class="category-reset" id="resetCategory">すべて表示</button></div>
+ <div class="category-tree" id="categoryTree"></div>
+</aside>
+<div class="library-content">
+ <div class="toolbar"><input class="field" id="assetSearch" placeholder="素材名・説明・タグで検索…"><select class="select" id="assetStatus"><option value="">すべての状態</option><option>制作中</option><option>確認待ち</option><option>完成</option><option>旧版</option></select></div>
+ <div class="hint" id="categorySelection" style="margin:0 0 12px"></div>
+ <div class="assetgrid" id="assetGrid"></div>
+</div></div></section>
 <section class="page" id="assetDetail"><button class="btn ghost" id="backAssets">← 素材一覧に戻る</button><div id="assetDetailBody" style="margin-top:14px"></div></section>
 <section class="page" id="tasks"><div class="head"><div><h1>タスク管理</h1><p class="lead">制作作業を小さく分けて、進捗を共有します。</p></div><button class="btn" id="addTask">＋ タスクを追加</button></div><div class="toolbar"><select class="select" id="taskFilter"><option value="">すべてのステータス</option><option>未着手</option><option>進行中</option><option>確認待ち</option><option>完了</option></select><select class="select" id="taskPriority"><option value="">すべての優先度</option><option>高</option><option>中</option><option>低</option></select></div><div class="list" id="taskList"></div></section>
 <section class="page" id="docs"><div class="head"><div><h1>設定資料集</h1><p class="lead">ゲームの仕様・育成・レース・世界観をまとめます。</p></div><button class="btn" id="addDoc">＋ 資料を追加</button></div><div class="toolbar"><select class="select" id="docCategory"><option value="">すべての分類</option><option>基本システム</option><option>育成システム</option><option>レースシステム</option><option>フリーマッチ</option><option>バランス調整</option><option>世界観・設定</option><option>その他</option></select><input class="field" id="docSearch" placeholder="資料タイトル・本文で検索…"></div><div class="list" id="docList"></div></section>
@@ -44,7 +73,7 @@
 
 <script>
 const CONFIG = window.VR_CONFIG || {};
-let db=null, currentType='', editingId=null, assets=[], tasks=[], docs=[], history=[], activeMajor='';
+let db=null, currentType='', editingId=null, assets=[], tasks=[], docs=[], history=[], activeMajor='', activeMiddle='', activeMinor='';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const date=s=>s?new Date(s).toLocaleString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
@@ -61,7 +90,61 @@ async function log(action,kind,title){if(!db)return;await db.from('activity_logs
 async function remove(kind,id,title){if(!requireDb()||!confirm(`「${title}」を削除しますか？`))return;const table=kind==='asset'?'assets':kind==='task'?'tasks':'documents';const {error}=await db.from(table).delete().eq('id',id);if(error){alert(error.message);return}await log('削除',kind,title);await loadAll()}
 function renderAll(){renderAssets();renderTasks();renderDocs();renderHistory();renderDashboard()}
 function renderDashboard(){$('statAssets').textContent=assets.length;$('statTasks').textContent=tasks.filter(x=>x.status!=='完了').length;$('statDocs').textContent=docs.length;$('statHistory').textContent=history.length;const counts=['未着手','進行中','確認待ち','完了'].map(s=>[s,tasks.filter(t=>t.status===s).length]);$('dashTasks').innerHTML=counts.map(([s,n])=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #edf1ed"><span>${s}</span><b>${n}</b></div>`).join('')||'まだタスクがありません';$('recentHistory').innerHTML=history.slice(0,5).map(h=>`<div style="padding:7px 0;border-bottom:1px solid #edf1ed"><b>${esc(h.action)}</b>　${esc(h.entity_title)}<div class="meta">${date(h.created_at)}</div></div>`).join('')||'まだ更新履歴がありません'}
-function renderAssets(){const q=$('assetSearch').value.toLowerCase(),st=$('assetStatus').value;const majors=['キャラクター','モンスター','ゲーム素材'];$('assetChips').innerHTML=['すべて',...majors].map(m=>`<button class="chip ${activeMajor===m?'active':''}" data-major="${m}">${m}</button>`).join('');document.querySelectorAll('[data-major]').forEach(b=>b.onclick=()=>{activeMajor=b.dataset.major==='すべて'?'':b.dataset.major;renderAssets()});const rows=assets.filter(a=>(!activeMajor||a.major===activeMajor)&&(!st||a.status===st)&&(!q||[a.name,a.description,a.tags,a.major,a.middle,a.minor].join(' ').toLowerCase().includes(q)));$('assetGrid').innerHTML=rows.map(a=>`<article class="tile" data-asset="${a.id}"><div class="thumb">${a.preview_url?`<img src="${esc(a.preview_url)}">`:'✧'}</div><div class="tilebody"><b>${esc(a.name)}</b><small>${esc([a.major,a.middle,a.minor].filter(Boolean).join(' / '))}</small><span class="pill ${a.status==='完成'?'done':a.status==='確認待ち'?'wait':''}">${esc(a.status||'制作中')}</span>${(a.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div></article>`).join('')||'<div class="empty">素材がまだありません。「素材を登録」から追加できます。</div>';document.querySelectorAll('[data-asset]').forEach(x=>x.onclick=()=>showAsset(x.dataset.asset))}
+const defaultCategoryTree=[
+ {name:'キャラクター',children:[{name:'主人公／ライバル'},{name:'スタッフ'},{name:'トレーナー'},{name:'モブ'}]},
+ {name:'モンスター',children:[{name:'基本種'},{name:'混合種'}]},
+ {name:'ゲーム素材',children:[{name:'キャラクター'},{name:'モンスター'},{name:'素材'},{name:'動作GIF'}]}
+];
+function buildCategoryTree(){
+ const tree=defaultCategoryTree.map(m=>({name:m.name,children:m.children.map(x=>({name:x.name,minor:new Set()}))}));
+ for(const a of assets){
+  const major=a.major||'未分類';
+  let m=tree.find(x=>x.name===major);
+  if(!m){m={name:major,children:[]};tree.push(m)}
+  const middle=a.middle||'未分類';
+  let mid=m.children.find(x=>x.name===middle);
+  if(!mid){mid={name:middle,minor:new Set()};m.children.push(mid)}
+  if(a.minor)mid.minor.add(a.minor);
+ }
+ return tree;
+}
+function categoryCount(major='',middle='',minor=''){
+ return assets.filter(a=>(!major||a.major===major)&&(!middle||a.middle===middle)&&(!minor||a.minor===minor)).length;
+}
+function selectCategory(major='',middle='',minor=''){
+ activeMajor=major;activeMiddle=middle;activeMinor=minor;renderAssets();
+}
+function renderCategoryTree(){
+ const tree=buildCategoryTree();
+ const selected=(m,mid='',minor='')=>activeMajor===m&&activeMiddle===mid&&activeMinor===minor?'selected':'';
+ $('categoryTree').innerHTML=tree.map(m=>{
+  const mCount=categoryCount(m.name);
+  const middleHtml=m.children.map(mid=>{
+   const midCount=categoryCount(m.name,mid.name);
+   const minors=[...mid.minor].sort((a,b)=>a.localeCompare(b,'ja'));
+   return `<details ${activeMajor===m.name&&activeMiddle===mid.name?'open':''}>
+    <summary><span>${esc(mid.name)}</span><span class="cat-count">${midCount}</span></summary>
+    <button class="cat-link ${selected(m.name,mid.name)}" data-cat-major="${esc(m.name)}" data-cat-middle="${esc(mid.name)}">中カテゴリー全体 <span class="cat-count">${midCount}</span></button>
+    ${minors.map(n=>`<button class="cat-link level-minor ${selected(m.name,mid.name,n)}" data-cat-major="${esc(m.name)}" data-cat-middle="${esc(mid.name)}" data-cat-minor="${esc(n)}">${esc(n)} <span class="cat-count">${categoryCount(m.name,mid.name,n)}</span></button>`).join('')}
+   </details>`;
+  }).join('');
+  return `<details ${activeMajor===m.name?'open':''}>
+   <summary><strong>${esc(m.name)}</strong><span class="cat-count">${mCount}</span></summary>
+   <button class="cat-link ${selected(m.name)}" data-cat-major="${esc(m.name)}">大カテゴリー全体 <span class="cat-count">${mCount}</span></button>
+   ${middleHtml||'<div class="cat-empty">中カテゴリーはまだありません</div>'}
+  </details>`;
+ }).join('')||'<div class="cat-empty">カテゴリーがありません</div>';
+ document.querySelectorAll('[data-cat-major]').forEach(b=>b.onclick=()=>selectCategory(b.dataset.catMajor,b.dataset.catMiddle||'',b.dataset.catMinor||''));
+ $('resetCategory').onclick=()=>selectCategory();
+ $('categorySelection').textContent=activeMajor?[activeMajor,activeMiddle,activeMinor].filter(Boolean).join(' / ')+' の素材を表示中':'すべてのカテゴリーの素材を表示中';
+}
+function renderAssets(){
+ const q=$('assetSearch').value.toLowerCase(),st=$('assetStatus').value;
+ renderCategoryTree();
+ const rows=assets.filter(a=>(!activeMajor||a.major===activeMajor)&&(!activeMiddle||a.middle===activeMiddle)&&(!activeMinor||a.minor===activeMinor)&&(!st||a.status===st)&&(!q||[a.name,a.description,(a.tags||[]).join(' '),a.major,a.middle,a.minor].join(' ').toLowerCase().includes(q)));
+ $('assetGrid').innerHTML=rows.map(a=>`<article class="tile" data-asset="${a.id}"><div class="thumb">${a.preview_url?`<img src="${esc(a.preview_url)}">`:'✧'}</div><div class="tilebody"><b>${esc(a.name)}</b><small>${esc([a.major,a.middle,a.minor].filter(Boolean).join(' / '))}</small><span class="pill ${a.status==='完成'?'done':a.status==='確認待ち'?'wait':''}">${esc(a.status||'制作中')}</span>${(a.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div></article>`).join('')||'<div class="empty">該当する素材がありません。</div>';
+ document.querySelectorAll('[data-asset]').forEach(x=>x.onclick=()=>showAsset(x.dataset.asset))
+}
 function showAsset(id){const a=assets.find(x=>x.id===id);if(!a)return;go('assetDetail');$('assetDetailBody').innerHTML=`<div class="detail"><div class="head"><div><h1>${esc(a.name)}</h1><p class="lead">${esc([a.major,a.middle,a.minor].filter(Boolean).join(' / '))}</p></div><div><button class="btn secondary" id="editCurrent">編集</button> <button class="btn danger" id="deleteCurrent">削除</button></div></div>${a.preview_url?`<div class="detailrow"><span>プレビュー</span><img src="${esc(a.preview_url)}" alt="${esc(a.name)}"></div>`:''}<div class="detailrow"><span>状態</span>${esc(a.status)}</div><div class="detailrow"><span>説明・メモ</span>${esc(a.description||'未登録')}</div><div class="detailrow"><span>タグ</span>${(a.tags||[]).map(esc).join(' / ')||'なし'}</div><div class="detailrow"><span>ファイル</span>${(a.file_urls||[]).map(u=>`<a href="${esc(u)}" target="_blank" rel="noopener">ファイルを開く</a>`).join('<br>')||'なし'}</div><div class="meta">最終更新：${date(a.updated_at)}</div></div>`;$('editCurrent').onclick=()=>openForm('asset',a);$('deleteCurrent').onclick=()=>remove('asset',a.id,a.name)}
 function renderTasks(){const s=$('taskFilter').value,p=$('taskPriority').value;const rows=tasks.filter(t=>(!s||t.status===s)&&(!p||t.priority===p));$('taskList').innerHTML=rows.map(t=>`<div class="item"><div class="itemmain"><b>${esc(t.title)}</b><p>${esc(t.description||'')}</p><div class="meta">${esc(t.category||'未分類')}　·　優先度：${esc(t.priority||'中')}　·　期限：${esc(t.due_date||'未設定')}</div></div><span class="pill ${t.status==='完了'?'done':t.status==='確認待ち'?'wait':''}">${esc(t.status)}</span><button class="btn ghost" data-edit-task="${t.id}">編集</button><button class="btn danger" data-del-task="${t.id}">削除</button></div>`).join('')||'<div class="empty">タスクはまだありません。</div>';document.querySelectorAll('[data-edit-task]').forEach(b=>b.onclick=()=>openForm('task',tasks.find(x=>x.id===b.dataset.editTask)));document.querySelectorAll('[data-del-task]').forEach(b=>b.onclick=()=>{const t=tasks.find(x=>x.id===b.dataset.delTask);remove('task',t.id,t.title)})}
 function renderDocs(){const c=$('docCategory').value,q=$('docSearch').value.toLowerCase();const rows=docs.filter(d=>(!c||d.category===c)&&(!q||[d.title,d.content,d.category].join(' ').toLowerCase().includes(q)));$('docList').innerHTML=rows.map(d=>`<div class="item"><div class="itemmain"><b>${esc(d.title)}</b><p>${esc((d.content||'').slice(0,240))}</p><div class="meta">${esc(d.category)}　·　更新：${date(d.updated_at)}</div></div><button class="btn ghost" data-edit-doc="${d.id}">編集</button><button class="btn danger" data-del-doc="${d.id}">削除</button></div>`).join('')||'<div class="empty">資料はまだありません。</div>';document.querySelectorAll('[data-edit-doc]').forEach(b=>b.onclick=()=>openForm('doc',docs.find(x=>x.id===b.dataset.editDoc)));document.querySelectorAll('[data-del-doc]').forEach(b=>b.onclick=()=>{const d=docs.find(x=>x.id===b.dataset.delDoc);remove('doc',d.id,d.title)})}
